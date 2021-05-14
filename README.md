@@ -91,7 +91,7 @@
         let rgb_value = document.querySelector('.rgb_value').querySelector('input');
         color_container.addEventListener('click', function(event) {
             //console.log(event.target);
-            //div直接获取name属性获取不到, 得用getAttribute()
+            //div直接获取name和value属性获取不到, 得用getAttribute()
             rgb_value.value = event.target.getAttribute('value');
         })
     </script>
@@ -103,6 +103,72 @@
 ![image](https://user-images.githubusercontent.com/84166052/118217216-93f86600-b4a7-11eb-8c35-e607363ec6e3.png)
 
 ### 进行了改进, 把整个颜色选择器封装到js文件里, 通过appendChild的形式添加盒子和样式, 使用的时候就只需要添加js文件即可:
+```javascript
+        /* 1. 整体的父盒子部分 */
+        let colorpicker = document.createElement("div");
+        colorpicker.style = `
+        width: 230px;
+        height: 300px;
+        margin: auto;
+        padding: 2px;
+        background-color: #f1f1f1;
+        border: 1px solid black;
+        text-align: center;
+        `;
+        colorpicker.innerText = '点击选择颜色';
+
+        /* 2. 选色盒子部分 */
+        let color_container = document.createElement("div");
+        color_container.style = `
+        display: flex;
+        width: 220px;
+        height: 210px;
+        margin: 5px;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        background-color: #cec7c7;
+        `;
+
+        /* 创建颜色代码数组 */
+        let color_array = [
+            "#ffffff", "#e5e4e4", "#d9d8d8", "#c0bdbd", "#a7a4a4", "#8e8a8b", "#827e7f", "#767173", "#5c585a", "#000000",
+            "#fefcdf", "#fef4c4", "#feed9b", "#fee573", "#ffed43", "#f6cc0b", "#f6cc0b", "#c9a601", "#ad8e00", "#8c7301",
+            "#ffded3", "#ffc4b0", "#ff9d7d", "#ff7a4e", "#ff6600", "#e95d00", "#d15502", "#ba4b01", "#a44201", "#8d3901",
+            "#ffd2d0", "#ffbab7", "#fe9a95", "#ff7a73", "#ff483f", "#fe2419", "#f10b00", "#d40a00", "#940000", "#6d201b",
+            "#ffdaed", "#ffb7dc", "#ffa1d1", "#ff84c3", "#ff57ac", "#fd1289", "#ec0078", "#d6006d", "#bb005f", "#9b014f",
+            "#fcd6fe", "#fbbcff", "#f9a1fe", "#f784fe", "#f564fe", "#f546ff", "#f328ff", "#d801e5", "#c001cb", "#8f0197",
+            "#e2f0fe", "#c7e2fe", "#add5fe", "#92c7fe", "#6eb5ff", "#48a2ff", "#2690fe", "#0162f4", "#013add", "#0021b0",
+            "#d3fdff", "#acfafd", "#7cfaff", "#4af7fe", "#1de6fe", "#01deff", "#00cdec", "#01b6de", "#00a0c2", "#0084a0",
+            "#edffcf", "#dffeaa", "#d1fd88", "#befa5a", "#a8f32a", "#8fd80a", "#79c101", "#3fa701", "#307f00", "#156200",
+            "#d4c89f", "#daad88", "#c49578", "#c2877e", "#ac8295", "#c0a5c4", "#969ac2", "#92b7d7", "#80adaf", "#9ca53b",
+        ];
+
+        // 遍历数组，添加pick按钮至容器
+        for (let color of color_array) {
+            color_container.innerHTML += `<div value="${color}" style="background: ${color}; width: 15px; height: 15px; margin: 3px; cursor: pointer;"></div>`
+        }
+
+
+        /* 3. 显示颜色RGB数值的部分 */
+        let show_rgb = document.createElement('div');
+        show_rgb.innerHTML = `RGB值为 <input type="text" value="">`;
+
+
+        /* 4. 最后加上点击事件 */
+        let rgb_value = show_rgb.querySelector('input');
+        color_container.addEventListener('click', function(event) {
+            console.log(event.target);
+            //div直接获取name属性获取不到, 得用getAttribute()
+            rgb_value.value = event.target.getAttribute('value');
+        })
+
+        /* append进body里 */
+        colorpicker.appendChild(color_container);
+        colorpicker.appendChild(show_rgb);
+        document.body.appendChild(colorpicker);
+```
 
 
 
