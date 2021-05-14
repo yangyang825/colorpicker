@@ -1,10 +1,10 @@
 # colorpicker
 
 ## 需求分析:
-以下四种方案, 前三种为点击色块选择颜色, 第四种为滑动/拖拽选颜色, 所以分为两种实现类型-色块还有色带, 做出两个colorpicker.
+以下四种方案, 前三种为点击色块选择颜色, 第四种为滑动/拖拽选颜色, 所以分为两种实现类型-色块或者色带, 做出两种colorpicker.
 ![image](https://user-images.githubusercontent.com/84166052/118216523-40d1e380-b4a6-11eb-8b1f-1db36852c220.png)
 
-## 第一种颜色选择器: 点击色块选择颜色
+## 第一种方案的颜色选择器: 点击色块选择颜色
 
 ```html
 <!DOCTYPE html>
@@ -66,7 +66,7 @@
         let colorpicker = document.getElementById('colorpicker');
         let color_container = document.querySelector('.color_container');
         /* 创建颜色代码数组 */
-        // 因为找不到颜色变化的规律, 所以用了笨方法, 写死了数组
+        // 因为找不到这个案例的颜色变化的规律, 所以用了笨方法, 写死了颜色数组
         let color_array = [
             "#ffffff", "#e5e4e4", "#d9d8d8", "#c0bdbd", "#a7a4a4", "#8e8a8b", "#827e7f", "#767173", "#5c585a", "#000000",
             "#fefcdf", "#fef4c4", "#feed9b", "#fee573", "#ffed43", "#f6cc0b", "#f6cc0b", "#c9a601", "#ad8e00", "#8c7301",
@@ -170,6 +170,8 @@
         document.body.appendChild(colorpicker);
 ```
 
+## 第二种方案颜色选择器：拖拽或者点击色带进行选择
+这种渐变的色带容易想到用css直接实现渐变，不过如果要把功能都放进一个js文件里方便移植，还可以用js来填渐变色
 
 
 
