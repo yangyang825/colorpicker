@@ -174,12 +174,18 @@
 ![image](https://user-images.githubusercontent.com/84166052/118252281-2a924a80-b4db-11eb-9136-d95579b9d3c1.png)
 这种渐变的色带容易想到用css3的[linear-gradient](https://developer.mozilla.org/zh-CN/docs/Web/CSS/linear-gradient())直接实现渐变，不过如果要把功能都放进一个js文件里方便移植，还可以用js来填渐变色; 从左到右是基本色渐变，从上到下是从明到暗渐变。
 
-难点还是找颜色渐变的规律，查询相关资料得出。
+难点还是找可见光颜色渐变的规律，查询相关资料和取色找规律得出渐变规律。
 
 最后的显示数值部分，除了显示RGB值，还有HSV值，所以还涉及到两种数值的转换规则。
 
 >[MDN linear-gradient](https://developer.mozilla.org/zh-CN/docs/Web/CSS/linear-gradient())
->[色带的RGB值变化规律]()
+>
+>[色带的RGB值变化规律，配合取色找出规律](https://zh.wikipedia.org/wiki/%E5%8F%AF%E8%A7%81%E5%85%89)
+>
+>[HSV和RGB值互相转换](https://blog.csdn.net/lly_3485390095/article/details/104570885)
+
+
+
 
 
 
