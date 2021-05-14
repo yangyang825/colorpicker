@@ -174,7 +174,7 @@
 ![image](https://user-images.githubusercontent.com/84166052/118252281-2a924a80-b4db-11eb-9136-d95579b9d3c1.png)
 这种渐变的色带容易想到用css3的[linear-gradient](https://developer.mozilla.org/zh-CN/docs/Web/CSS/linear-gradient())直接实现渐变，不过如果要把功能都放进一个js文件里方便移植，还可以用js来填渐变色; 从左到右是基本色渐变，从上到下是从明到暗渐变。
 
-难点还是找可见光颜色渐变的规律，查询相关资料和取色找规律得出渐变规律。
+难点还是找可见光颜色渐变的规律，查询相关资料和取色找规律得出渐变规律。观察规律为从左到右均匀分布：【红0%，黄17%，青34%，天蓝50%，蓝67%，紫84%，红100%】
 
 最后的显示数值部分，除了显示RGB值，还有HSV值，所以还涉及到两种数值的转换规则。
 
@@ -182,9 +182,18 @@
 >
 >[色带的RGB值变化规律，配合取色找出规律](https://zh.wikipedia.org/wiki/%E5%8F%AF%E8%A7%81%E5%85%89)
 >
->[HSV和RGB值互相转换](https://blog.csdn.net/lly_3485390095/article/details/104570885)
+>[HSL和RGB值互相转换](http://www.easyrgb.com/en/math.php)
 
+色带部分用如下css可以实现：
+```css
+.color_wheel {
+            /* 【红0%，黄17%，青34%，天蓝50%，蓝67%，紫84%，红100%】 */
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(132, 132, 132, .8) 100%), linear-gradient(to right, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 17%, rgb(0, 255, 0)34%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 67%, rgb(255, 0, 255) 84%, rgb(255, 0, 0) 100%);
+        }
+```
+>注意：从上到下，光谱变为rgb为(132,132,132)的颜色，加上透明度，这个linear需要写在从左到右设置光谱的linear前面，写在没有透明度的光谱后面的话，等于没写。
 
+效果如下：![image](https://user-images.githubusercontent.com/84166052/118269757-ae573180-b4f1-11eb-9b88-bb1d97e7061c.png)
 
 
 
