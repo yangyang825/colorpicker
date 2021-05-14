@@ -171,7 +171,11 @@
 ```
 
 ## 第二种方案颜色选择器：拖拽或者点击色带进行选择
-这种渐变的色带容易想到用css直接实现渐变，不过如果要把功能都放进一个js文件里方便移植，还可以用js来填渐变色
+这种渐变的色带容易想到用css3的[linear-gradient](https://developer.mozilla.org/zh-CN/docs/Web/CSS/linear-gradient())直接实现渐变，不过如果要把功能都放进一个js文件里方便移植，还可以用js来填渐变色;
+难点还是找颜色渐变的规律，查询相关资料得出。
+最后的显示数值部分，除了显示RGB值，还有HSV值，所以还涉及到两种数值的转换规则
+>[MDN linear-gradient](https://developer.mozilla.org/zh-CN/docs/Web/CSS/linear-gradient())
+>[色带的RGB值变化规律]()
 
 
 
