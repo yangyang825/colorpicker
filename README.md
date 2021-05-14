@@ -176,7 +176,7 @@
 
 难点还是找可见光颜色渐变的规律，查询相关资料和取色找规律得出渐变规律。观察规律为从左到右均匀分布：【红0%，黄17%，青34%，天蓝50%，蓝67%，紫84%，红100%】
 
-最后的显示数值部分，除了显示RGB值，还有HSV值，所以还涉及到两种数值的转换规则。
+最后的显示数值部分，除了显示RGB值，还有HSL值，所以还涉及到两种数值的转换规则。
 
 >[MDN linear-gradient](https://developer.mozilla.org/zh-CN/docs/Web/CSS/linear-gradient())
 >
@@ -193,7 +193,133 @@
 ```
 >注意：从上到下，光谱变为rgb为(132,132,132)的颜色，加上透明度，这个linear需要写在从左到右设置光谱的linear前面，写在没有透明度的光谱后面的话，等于没写。
 
-效果如下：![image](https://user-images.githubusercontent.com/84166052/118269757-ae573180-b4f1-11eb-9b88-bb1d97e7061c.png)
+DOM结构如下：
+```html
+<div id="colorpicker">
+        <div class="color_wheel"></div>
+        <div class="heightness_wheel">
+            <div class="triangle"></div>
+        </div>
+        <div class="information">
+            <div class="show_color">
+                <div class="picked_color"></div>
+                <span>颜色|纯色(O)</span>
+            </div>
+            <div class="hsl_value">
+                <div class="item"><span>色调(E):</span><input type="text" value=""></div>
+                <div class="item"><span>饱和度(S):</span><input type="text" value=""></div>
+                <div class="item"><span>亮度(L):</span><input type="text" value=""></div>
+            </div>
+            <div class="rgb_value">
+                <div class="item"><span>红(R):</span><input type="text" value=""></div>
+                <div class="item"><span>绿(G):</span><input type="text" value=""></div>
+                <div class="item"><span>蓝(U):</span><input type="text" value=""></div>
+            </div>
+        </div>
+    </div>
+```
+加上样式：
+```css
+* {
+            margin: 0px;
+            padding: 0px;
+        }
+        
+        #colorpicker {
+            width: 260px;
+            height: 350px;
+            padding: 4px;
+            background-color: #f0f0f0;
+        }
+        
+        .color_wheel {
+            float: left;
+            width: 200px;
+            height: 250px;
+            border: 2px solid white;
+            /* 【红0%，黄17%，青34%，天蓝50%，蓝67%，紫84%，红100%】 */
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(132, 132, 132, .9) 100%), linear-gradient(to right, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 17%, rgb(0, 255, 0)34%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 67%, rgb(255, 0, 255) 84%, rgb(255, 0, 0) 100%);
+        }
+        
+        .heightness_wheel {
+            position: relative;
+            float: right;
+            width: 12px;
+            height: 250px;
+            margin-right: 10px;
+            border: 2px solid #d0d0d0;
+            background: linear-gradient(to bottom, rgb(255, 255, 255) 0%, rgb(0, 0, 0) 100%);
+        }
+        
+        .heightness_wheel .triangle {
+            position: absolute;
+            top: 50%;
+            left: 14px;
+            width: 0;
+            height: 0;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-right: 8px solid black
+        }
+        
+        .information {
+            float: left;
+            width: 260px;
+            height: 150px;
+            padding-top: 7px;
+            font-size: 12px;
+        }
+        
+        .information .show_color,
+        .hsl_value,
+        .rgb_value {
+            display: inline-block;
+        }
+        
+        .show_color {
+            position: relative;
+            width: 80px;
+            height: 85px;
+        }
+        
+        .show_color .picked_color {
+            width: 100%;
+            height: 60px;
+            border: 1px solid grey;
+            background-color: yellow;
+        }
+        
+        .show_color span {
+            position: absolute;
+            top: 63px;
+            left: 0;
+        }
+        
+        .hsl_value {
+            width: 90px;
+            height: 85px;
+            margin-right: 4px;
+        }
+        
+        .rgb_value {
+            width: 68px;
+            height: 85px;
+        }
+        
+        .item {
+            float: right;
+            height: 30px;
+        }
+        
+        .information input {
+            display: inline-block;
+            width: 33px;
+            height: 18px;
+            border: 1px solid black;
+        }
+```
+效果如下：
+![Uploading image.png…]()
 
 
 
