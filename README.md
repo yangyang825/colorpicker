@@ -99,7 +99,7 @@
 
 </html>
 ```
-效果如下:
+第一种方案最终效果如下:
 ![image](https://user-images.githubusercontent.com/84166052/118217216-93f86600-b4a7-11eb-8c35-e607363ec6e3.png)
 
 ### 进行了改进, 把整个颜色选择器封装到js文件里, 通过appendChild的形式添加盒子和样式, 使用的时候就只需要添加js文件即可:
@@ -318,8 +318,11 @@ DOM结构如下：
             border: 1px solid black;
         }
 ```
-效果如下：
-![Uploading image.png…]()
+样式补充完成后效果如下：
+![image](https://user-images.githubusercontent.com/84166052/118283234-b74fff00-b501-11eb-8585-ba6b26a83654.png)
+
+
+
 
 
 
