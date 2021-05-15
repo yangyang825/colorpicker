@@ -102,7 +102,7 @@
 第一种方案最终效果如下:
 ![image](https://user-images.githubusercontent.com/84166052/118217216-93f86600-b4a7-11eb-8c35-e607363ec6e3.png)
 
-### 进行了改进, 把整个颜色选择器封装到js文件里, 通过appendChild的形式添加盒子和样式, 使用的时候就只需要添加js文件即可:
+### 进行了改进, 把整个颜色选择器封装到js文件里, 通过appendChild的形式添加盒子和样式, 使用的时候就只需要添加js文件即可: 
 ```javascript
         /* 1. 整体的父盒子部分 */
         let colorpicker = document.createElement("div");
@@ -172,154 +172,88 @@
 
 ## 第二种方案颜色选择器：拖拽或者点击色带进行选择
 ![image](https://user-images.githubusercontent.com/84166052/118252281-2a924a80-b4db-11eb-9136-d95579b9d3c1.png)
-这种渐变的色带容易想到用css3的[linear-gradient](https://developer.mozilla.org/zh-CN/docs/Web/CSS/linear-gradient())直接实现渐变，不过如果要把功能都放进一个js文件里方便移植，还可以用js来填渐变色; 从左到右是基本色渐变，从上到下是从明到暗渐变。
 
-难点还是找可见光颜色渐变的规律，查询相关资料和取色找规律得出渐变规律。观察规律为从左到右均匀分布：【红0%，黄17%，青34%，天蓝50%，蓝67%，紫84%，红100%】
+### 第二种方案的功能分析(根据Photoshop功能分析):
+>1. 左边色块从左到右为可见光光谱, 右边为明暗色带;
+>2. 同时输出HSL和RGB值, 所以获取HSL后再转换为RGB: [HSL和RGB值互相转换](http://www.easyrgb.com/en/math.php)
+>3. 右侧明暗发生变化时, 左边色块整体的颜色明暗也会随之发生变化;
+>4. 左边色块中的圆形可以点击/拖拽选择颜色, 右边明暗带的三角形可以点击/拖拽改变明暗;
 
-最后的显示数值部分，除了显示RGB值，还有HSL值，所以还涉及到两种数值的转换规则。
 
->[MDN linear-gradient](https://developer.mozilla.org/zh-CN/docs/Web/CSS/linear-gradient())
->
->[色带的RGB值变化规律，配合取色找出规律](https://zh.wikipedia.org/wiki/%E5%8F%AF%E8%A7%81%E5%85%89)
->
->[HSL和RGB值互相转换](http://www.easyrgb.com/en/math.php)
-
-色带部分用如下css可以实现：
+色带部分用如下css的linear-gradient实现：
 ```css
 .color_wheel {
             /* 【红0%，黄17%，青34%，天蓝50%，蓝67%，紫84%，红100%】 */
-            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(132, 132, 132, .8) 100%), linear-gradient(to right, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 17%, rgb(0, 255, 0)34%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 67%, rgb(255, 0, 255) 84%, rgb(255, 0, 0) 100%);
-        }
-```
->注意：从上到下，光谱变为rgb为(132,132,132)的颜色，加上透明度，这个linear需要写在从左到右设置光谱的linear前面，写在没有透明度的光谱后面的话，等于没写。
-
-DOM结构如下：
-```html
-<div id="colorpicker">
-        <div class="color_wheel"></div>
-        <div class="heightness_wheel">
-            <div class="triangle"></div>
-        </div>
-        <div class="information">
-            <div class="show_color">
-                <div class="picked_color"></div>
-                <span>颜色|纯色(O)</span>
-            </div>
-            <div class="hsl_value">
-                <div class="item"><span>色调(E):</span><input type="text" value=""></div>
-                <div class="item"><span>饱和度(S):</span><input type="text" value=""></div>
-                <div class="item"><span>亮度(L):</span><input type="text" value=""></div>
-            </div>
-            <div class="rgb_value">
-                <div class="item"><span>红(R):</span><input type="text" value=""></div>
-                <div class="item"><span>绿(G):</span><input type="text" value=""></div>
-                <div class="item"><span>蓝(U):</span><input type="text" value=""></div>
-            </div>
-        </div>
-    </div>
-```
-加上样式：
-```css
-* {
-            margin: 0px;
-            padding: 0px;
-        }
-        
-        #colorpicker {
-            width: 260px;
-            height: 350px;
-            padding: 4px;
-            background-color: #f0f0f0;
-        }
-        
-        .color_wheel {
-            float: left;
-            width: 200px;
-            height: 250px;
-            border: 2px solid white;
-            /* 【红0%，黄17%，青34%，天蓝50%，蓝67%，紫84%，红100%】 */
-            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(132, 132, 132, .9) 100%), linear-gradient(to right, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 17%, rgb(0, 255, 0)34%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 67%, rgb(255, 0, 255) 84%, rgb(255, 0, 0) 100%);
-        }
-        
-        .heightness_wheel {
-            position: relative;
-            float: right;
-            width: 12px;
-            height: 250px;
-            margin-right: 10px;
-            border: 2px solid #d0d0d0;
-            background: linear-gradient(to bottom, rgb(255, 255, 255) 0%, rgb(0, 0, 0) 100%);
-        }
-        
-        .heightness_wheel .triangle {
-            position: absolute;
-            top: 50%;
-            left: 14px;
-            width: 0;
-            height: 0;
-            border-top: 8px solid transparent;
-            border-bottom: 8px solid transparent;
-            border-right: 8px solid black
-        }
-        
-        .information {
-            float: left;
-            width: 260px;
-            height: 150px;
-            padding-top: 7px;
-            font-size: 12px;
-        }
-        
-        .information .show_color,
-        .hsl_value,
-        .rgb_value {
-            display: inline-block;
-        }
-        
-        .show_color {
-            position: relative;
-            width: 80px;
-            height: 85px;
-        }
-        
-        .show_color .picked_color {
-            width: 100%;
-            height: 60px;
-            border: 1px solid grey;
-            background-color: yellow;
-        }
-        
-        .show_color span {
-            position: absolute;
-            top: 63px;
-            left: 0;
-        }
-        
-        .hsl_value {
-            width: 90px;
-            height: 85px;
-            margin-right: 4px;
-        }
-        
-        .rgb_value {
-            width: 68px;
-            height: 85px;
-        }
-        
-        .item {
-            float: right;
-            height: 30px;
-        }
-        
-        .information input {
-            display: inline-block;
-            width: 33px;
-            height: 18px;
-            border: 1px solid black;
+            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 1) 100%), linear-gradient(to right, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 17%, rgb(0, 255, 0)34%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 67%, rgb(255, 0, 255) 84%, rgb(255, 0, 0) 100%);
         }
 ```
 样式补充完成后效果如下：
-![image](https://user-images.githubusercontent.com/84166052/118283234-b74fff00-b501-11eb-8585-ba6b26a83654.png)
+
+![image](https://user-images.githubusercontent.com/84166052/118363804-b504a800-b5c8-11eb-9abc-9f5e2157a9e5.png)
+
+接下来实现既可以点击选择颜色,又可以拖拽选色圆形的功能:
+```javascript
+        /* 下面实现: 点击后drag移动到鼠标位置 && 拖拽功能, 并且控制drag在色块区域内 */
+        let color_wheel = document.querySelector('.color_wheel');
+        let drag_circle = document.querySelector('.circle');
+        //获取原点在页面中的坐标
+        let basepointX = color_wheel.offsetLeft;
+        let basepointY = color_wheel.offsetTop;
+        //封装一个函数,控制drag在色块内
+        function changeDragPosition(dragX, dragY) {
+            if (dragX >= 0 && dragX <= 200) {
+                drag_circle.style.left = dragX - 5 + 'px';
+            }
+            if (dragY >= 0 && dragY <= 250) {
+                drag_circle.style.top = dragY - 5 + 'px';
+            }
+            if (dragX <= 0) {
+                drag_circle.style.left = '0px';
+            }
+            if (dragY <= 0) {
+                drag_circle.style.top = '0px';
+            }
+            if (dragX >= 190) {
+                drag_circle.style.left = '190px';
+            }
+            if (dragY >= 240) {
+                drag_circle.style.top = '240px';
+            }
+        }
+        //点击时,drag移动到鼠标位置,6+4=10是圆drag的直径
+        color_wheel.addEventListener('mouseup', function(event) {
+                let dragX = event.pageX - basepointX;
+                let dragY = event.pageY - basepointY;
+                changeDragPosition(dragX, dragY);
+            })
+            //drag可以拖拽
+        drag_circle.addEventListener('mousedown', function(event) {
+            //当鼠标按下， 就获得鼠标在drag内的坐标
+            let initX = (event.pageX - basepointX) - drag_circle.offsetLeft;
+            let initY = (event.pageY - basepointY) - drag_circle.offsetTop;
+            console.log(initX);
+            //鼠标移动的时候，把鼠标在color_wheel中的坐标，减去 鼠标在drag内的坐标就是模态框drag的left和top值
+            document.addEventListener('mousemove', moveDrag);
+
+            function moveDrag(event) {
+                let dragX = (event.pageX - basepointX) - initX + 5;
+                let dragY = (event.pageY - basepointY) - initY + 5;
+                console.log(dragX, dragY);
+                changeDragPosition(dragX, dragY);
+            }
+
+            //鼠标弹起，就让鼠标移动事件移除
+            document.addEventListener('mouseup', function() {
+                document.removeEventListener('mousemove', moveDrag);
+            })
+        });
+```
+
+同理完成点击/拖拽三角形,控制明暗的功能;
+
+接下来完成根据坐标,输出HSL和RGB颜色的功能:
+观察可得容易从坐标得到HSL的值: 可见光色块部分,从左到右改变横坐标时SL不变,H(色相hue)从0°变为360°;从上到下改变纵坐标时, HL不变, S从100%变为0%; 所以,先获得HSL比较容易,最后转化成RGB一起输出.
+
 
 
 
