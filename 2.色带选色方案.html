@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+        
+        #colorpicker {
+            width: 260px;
+            height: 350px;
+            padding: 4px;
+            margin: auto;
+            margin-top: 100px;
+            background-color: #f0f0f0;
+        }
+        
+        .color_wheel {
+            position: relative;
+            float: left;
+            width: 200px;
+            height: 250px;
+            border: 2px solid white;
+            /* 【红0%，黄17%，青34%，天蓝50%，蓝67%，紫84%，红100%】 */
+            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 1) 100%), linear-gradient(to right, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 17%, rgb(0, 255, 0)34%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 67%, rgb(255, 0, 255) 84%, rgb(255, 0, 0) 100%);
+            /* background: linear-gradient(to bottom, rgba(255, 255, 255, .6) 0%, rgba(255, 255, 255, 1) 100%), linear-gradient(to right, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 17%, rgb(0, 255, 0)34%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 67%, rgb(255, 0, 255) 84%, rgb(255, 0, 0) 100%); */
+        }
+        
+        .color_wheel .circle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border: 2px solid black;
+            border-radius: 50%;
+        }
+        
+        .leightness_wheel {
+            position: relative;
+            float: right;
+            width: 12px;
+            height: 250px;
+            margin-right: 10px;
+            border: 2px solid #d0d0d0;
+            background: linear-gradient(to bottom, rgb(255, 255, 255) 0%, rgb(0, 0, 0) 100%);
+        }
+        
+        .leightness_wheel .triangle {
+            position: absolute;
+            top: 23px;
+            width: 0;
+            height: 0;
+            margin-left: 14px;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-right: 8px solid black;
+        }
+        
+        .information {
+            float: left;
+            width: 260px;
+            height: 150px;
+            padding-top: 7px;
+            font-size: 10px;
+        }
+        
+        .information .show_color,
+        .hsl_value,
+        .rgb_value {
+            display: inline-block;
+        }
+        
+        .show_color {
+            position: relative;
+            width: 70px;
+            height: 85px;
+        }
+        
+        .show_color .picked_color {
+            width: 100%;
+            height: 60px;
+            border: 1px solid grey;
+            /* background-color: rgb(255, 255, 0); */
+        }
+        
+        .show_color span {
+            position: absolute;
+            top: 63px;
+            left: 0;
+        }
+        
+        .hsl_value {
+            width: 100px;
+            height: 85px;
+            margin-right: 4px;
+        }
+        
+        .rgb_value {
+            width: 68px;
+            height: 85px;
+        }
+        
+        .item {
+            float: right;
+            height: 30px;
+        }
+        
+        .information input {
+            display: inline-block;
+            width: 30px;
+            height: 18px;
+            border: 1px solid black;
+            font-size: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="colorpicker">
+        <div class="color_wheel">
+            <div class="circle drag"></div>
+        </div>
+        <div class="leightness_wheel">
+            <div class="triangle drag"></div>
+        </div>
+        <div class="information">
+            <div class="show_color">
+                <div class="picked_color"></div>
+                <span>颜色|纯色(O)</span>
+            </div>
+            <div class="hsl_value">
+                <div class="item"><span>色调(H°):</span><input type="text" value=""></div>
+                <div class="item"><span>饱和度(S%):</span><input type="text" value=""></div>
+                <div class="item"><span>亮度(L%):</span><input type="text" value=""></div>
+            </div>
+            <div class="rgb_value">
+                <div class="item"><span>红(R):</span><input type="text" value=""></div>
+                <div class="item"><span>绿(G):</span><input type="text" value=""></div>
+                <div class="item"><span>蓝(B):</span><input type="text" value=""></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        /* 1. 下面实现: 点击后drag移动到鼠标位置 && 拖拽功能, 并且控制drag在色块区域内 */
+        let color_wheel = document.querySelector('.color_wheel');
+        let drag_circle = document.querySelector('.circle');
+        //获取原点在页面中的坐标
+        let basepointX = color_wheel.offsetLeft;
+        let basepointY = color_wheel.offsetTop;
+        //封装一个函数,控制drag在色块内
+        function changeDragPosition(dragX, dragY) {
+            if (dragX >= 0 && dragX <= 200) {
+                drag_circle.style.left = dragX - 5 + 'px';
+            }
+            if (dragY >= 0 && dragY <= 250) {
+                drag_circle.style.top = dragY - 5 + 'px';
+            }
+            if (dragX <= 0) {
+                drag_circle.style.left = '0px';
+            }
+            if (dragY <= 0) {
+                drag_circle.style.top = '0px';
+            }
+            if (dragX >= 190) {
+                drag_circle.style.left = '190px';
+            }
+            if (dragY >= 240) {
+                drag_circle.style.top = '240px';
+            }
+        }
+        //点击时,drag移动到鼠标位置,6+4=10是圆drag的直径
+        color_wheel.addEventListener('mouseup', function(event) {
+                let dragX = event.pageX - basepointX;
+                let dragY = event.pageY - basepointY;
+                changeDragPosition(dragX, dragY);
+            })
+            //drag可以拖拽
+        drag_circle.addEventListener('mousedown', function(event) {
+            //当鼠标按下， 就获得鼠标在drag内的坐标
+            let initX = (event.pageX - basepointX) - this.offsetLeft;
+            let initY = (event.pageY - basepointY) - this.offsetTop;
+            console.log(initX);
+            //鼠标移动的时候，把鼠标在color_wheel中的坐标，减去 鼠标在drag内的坐标就是模态框drag的left和top值
+            document.addEventListener('mousemove', moveDrag);
+            //鼠标移动时取消默认行为，避免选中其他元素或文字
+            event.preventDefault();
+
+            function moveDrag(event) {
+                let dragX = (event.pageX - basepointX) - initX + 5;
+                let dragY = (event.pageY - basepointY) - initY + 5;
+                console.log(dragX, dragY);
+                changeDragPosition(dragX, dragY);
+            }
+
+            //鼠标弹起，就让鼠标移动事件移除
+            document.addEventListener('mouseup', function() {
+                document.removeEventListener('mousemove', moveDrag);
+            })
+        });
+        /* 同理完成点击/拖拽三角形,控制明暗的功能; */
+        let leightness_wheel = document.querySelector('.leightness_wheel');
+        let drag_triangle = document.querySelector('.triangle');
+        let hBasepointY = leightness_wheel.offsetTop;
+        //triangle大小,8*16
+        drag_triangle.addEventListener('mousedown', function(event) {
+            let triInitY = (event.pageY - hBasepointY) - this.offsetTop;
+
+            document.addEventListener('mousemove', moveTriangle)
+
+            function moveTriangle(event) {
+                event.preventDefault();
+                let dragY = (event.pageY - hBasepointY) - triInitY;
+                if (dragY >= 0 && dragY <= (250 - 16)) {
+                    drag_triangle.style.top = dragY + 'px';
+                }
+            }
+            let L = (1 - this.offsetTop / 240);
+            document.addEventListener('mousemove', changeColorL(L));
+            /* 每次改变light,都会更改拾色区整体亮度 */
+            function changeColorL(L) {
+                let rgb = L * 255;
+                color_wheel.style.background = 'linear-gradient(to bottom, rgba(' + rgb + ', ' + rgb + ', ' + rgb + ', .3) 0%, rgba(' + rgb + ', ' + rgb + ', ' + rgb + ', 1) 100%), linear-gradient(to right, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 17%, rgb(0, 255, 0)34%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 67%, rgb(255, 0, 255) 84%, rgb(255, 0, 0) 100%)';
+                //这里的模板字符串为什么不生效没搞懂
+                //`linear-gradient(to bottom, rgba(${rgb}, ${rgb}, ${rgb}, .3) 0%, rgba(${rgb}, ${rgb}, ${rgb}, 1) 100%), linear-gradient(to right, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 17%, rgb(0, 255, 0)34%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 67%, rgb(255, 0, 255) 84%, rgb(255, 0, 0) 100%)`;
+            }
+
+            // 释放
+            document.addEventListener('mouseup', function() {
+                document.removeEventListener('mousemove', moveTriangle);
+            })
+        })
+
+
+        /* 2. 鼠标up时代表选中了颜色,输出RGB和HSL值 */
+        class ColorValue {
+            constructor(h, s, l, r, g, b) {
+                this.H = h; //(h∈[0,1])*[0°,360°]
+                this.S = s; //(s∈[0,1])*100%
+                this.L = l; //(l∈[0,1])*100%
+                this.R = r;
+                this.G = g;
+                this.B = b;
+            }
+            position2Hsl(x, y, z) { //x,y是圆心相对色块左上角的坐标,z是明暗带往下滑动的相对距离
+                this.H = ((x) / 190); //x∈[5,195px]
+                this.S = (1 - ((y) / 250)); //y∈[0,250px]
+                this.L = (1 - (z / 240)); //z∈[0,240px]
+            }
+            HSL2RGB() {
+                //H, S and L input range = 0 ÷ 1.0
+                //R, G and B output range = 0 ÷ 255
+                if (this.S == 0) {
+                    this.R = this.L;
+                    this.G = this.L;
+                    this.B = this.L;
+                } else {
+                    var hue2rgb = function hue2rgb(p, q, t) {
+                        if (t < 0) t += 1;
+                        if (t > 1) t -= 1;
+                        if (t < 1 / 6) return p + (q - p) * 6 * t;
+                        if (t < 1 / 2) return q;
+                        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+                        return p;
+                    }
+                    let q = this.L < 0.5 ? this.L * (1 + this.S) : (this.L + this.S) - (this.S * this.L);
+                    let p = 2 * this.L - q;
+
+                    this.R = 255 * hue2rgb(p, q, this.H + (1 / 3))
+                    this.G = 255 * hue2rgb(p, q, this.H)
+                    this.B = 255 * hue2rgb(p, q, this.H - (1 / 3))
+                }
+            }
+        }
+        document.addEventListener('mouseup', outputColor);
+
+        let hslrgb = document.querySelectorAll('input'); //伪数组[h,s,l,r,g,b]
+
+        /* 根据坐标输出颜色值 */
+        function outputColor(event) {
+            //x,y是相对色块左上角的坐标,z是明暗带往下滑动的相对距离
+            let x = drag_circle.offsetLeft + 5;
+            let y = drag_circle.offsetTop + 5;
+            let z = drag_triangle.offsetTop;
+            let color_value = new ColorValue();
+            color_value.position2Hsl(x, y, z);
+            color_value.HSL2RGB();
+            console.log(color_value);
+            hslrgb[0].value = parseInt(color_value.H * 360 - 9);
+            hslrgb[1].value = parseInt(color_value.S * 100 + 2);
+            hslrgb[2].value = color_value.L * 100;
+            hslrgb[3].value = Math.round(color_value.R);
+            hslrgb[4].value = Math.round(color_value.G);
+            hslrgb[5].value = Math.round(color_value.B);
+            let picked_color = document.querySelector('.picked_color');
+            let str = 'rgb(' + hslrgb[3].value + ',' + hslrgb[4].value + ',' + hslrgb[5].value + ')'; //这里不要带分号
+            console.log(str);
+            picked_color.style.background = str;
+        }
+    </script>
+</body>
+
+</html>
