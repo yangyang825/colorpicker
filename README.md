@@ -253,8 +253,81 @@
 
 ### 接下来完成根据坐标,输出HSL和RGB颜色的功能: 练习es6语法和面向对象的思想
 观察可得容易从坐标得到HSL的值: 可见光色块部分,从左到右改变横坐标时SL不变,H(色相hue)从0°变为360°;从上到下改变纵坐标时, HL不变, S从100%变为0%; 所以,先获得HSL比较容易,最后转化成RGB一起输出.
+```javascript
 
+class ColorValue {
+            constructor(h, s, l, r, g, b) {
+                this.H = h; //(h∈[0,1])*[0°,360°]
+                this.S = s; //(s∈[0,1])*100%
+                this.L = l; //(l∈[0,1])*100%
+                this.R = r;
+                this.G = g;
+                this.B = b;
+            }
+            position2Hsl(x, y, z) { //x,y是相对色块左上角的坐标,z是明暗带往下滑动的相对距离
+                this.H = (x / 200); //x∈[0,200px]
+                this.S = (1 - (y / 250)); //y∈[0,250px]
+                this.L = (1 - (z / 250)); //z∈[0,250px]
+            }
+            HSL2RGB() {
+                //H, S and L input range = 0 ÷ 1.0
+                //R, G and B output range = 0 ÷ 255
+                if (this.S == 0) {
+                    this.R = this.L;
+                    this.G = this.L;
+                    this.B = this.L;
+                } else {
+                    var hue2rgb = function hue2rgb(p, q, t) {
+                        if (t < 0) t += 1;
+                        if (t > 1) t -= 1;
+                        if (t < 1 / 6) return p + (q - p) * 6 * t;
+                        if (t < 1 / 2) return q;
+                        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+                        return p;
+                    }
+                    let q = this.L < 0.5 ? this.L * (1 + this.S) : (this.L + this.S) - (this.S * this.L);
+                    let p = 2 * this.L - q;
 
+                    this.R = 255 * hue2rgb(p, q, this.H + (1 / 3))
+                    this.G = 255 * hue2rgb(p, q, this.H)
+                    this.B = 255 * hue2rgb(p, q, this.H - (1 / 3))
+                }
+            }
+        }
+        document.addEventListener('mouseup', outputColor);
+        let hslrgb = document.querySelectorAll('input'); //伪数组[h,s,l,r,g,b]
+
+        /* 根据坐标输出颜色值 */
+        function outputColor(event) {
+            //x,y是相对色块左上角的坐标,z是明暗带往下滑动的相对距离
+            let x = drag_circle.offsetLeft + 5;
+            let y = drag_circle.offsetTop + 5;
+            let z = drag_triangle.offsetTop;
+            let color_value = new ColorValue();
+            color_value.position2Hsl(x, y, z);
+            color_value.HSL2RGB();
+            console.log(color_value);
+            hslrgb[0].value = color_value.H * 360;
+            hslrgb[1].value = color_value.S * 100;
+            hslrgb[2].value = color_value.L * 100;
+            hslrgb[3].value = color_value.R;
+            hslrgb[4].value = color_value.G;
+            hslrgb[5].value = color_value.B;
+        }
+```
+
+### 最后完成: 拉动右侧明暗带, 左侧色块整体的明暗发生变化
+```javascript
+let L = (1 - this.offsetTop / 240);
+            document.addEventListener('mousemove', changeColorL(L));
+            /* 每次改变light,都会更改拾色区整体亮度 */
+            function changeColorL(L) {
+                let rgb = L * 255;
+                color_wheel.style.background = 'linear-gradient(to bottom, rgba(' + rgb + ', ' + rgb + ', ' + rgb + ', .6) 0%, rgba(' + rgb + ', ' + rgb + ', ' + rgb + ', 1) 100%), linear-gradient(to right, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 17%, rgb(0, 255, 0)34%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 67%, rgb(255, 0, 255) 84%, rgb(255, 0, 0) 100%)';       
+                
+                //`linear-gradient(to bottom, rgba(${rgb}, ${rgb}, ${rgb}, .3) 0%, rgba(${rgb}, ${rgb}, ${rgb}, 1) 100%), linear-gradient(to right, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 17%, rgb(0, 255, 0)34%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 67%, rgb(255, 0, 255) 84%, rgb(255, 0, 0) 100%)`;
+            }
+```
 
 
 
