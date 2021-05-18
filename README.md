@@ -1,5 +1,5 @@
 # colorpicker
-
+@[TOC]
 ## 需求分析:
 以下四种方案, 前三种为点击色块选择颜色, 第四种为滑动/拖拽选颜色, 所以分为两种实现类型-色块或者色带, 做出两种colorpicker.
 ![image](https://user-images.githubusercontent.com/84166052/118216523-40d1e380-b4a6-11eb-8b1f-1db36852c220.png)
