@@ -218,11 +218,8 @@
                 if (dragY >= 0 && dragY <= (250 - 16)) {
                     drag_triangle.style.top = dragY + 'px';
                 }
-            }
-            let L = (1 - this.offsetTop / 240);
-            document.addEventListener('mousemove', changeColorL(L));
-            /* 每次改变light,都会更改拾色区整体亮度 */
-            function changeColorL(L) {
+                /* 每次改变light,都会更改拾色区整体亮度 */
+                let L = (1 - drag_triangle.offsetTop / 240);
                 let rgb = L * 255;
                 color_wheel.style.background = 'linear-gradient(to bottom, rgba(' + rgb + ', ' + rgb + ', ' + rgb + ', .3) 0%, rgba(' + rgb + ', ' + rgb + ', ' + rgb + ', 1) 100%), linear-gradient(to right, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 17%, rgb(0, 255, 0)34%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 67%, rgb(255, 0, 255) 84%, rgb(255, 0, 0) 100%)';
                 //这里的模板字符串为什么不生效没搞懂
