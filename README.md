@@ -317,16 +317,11 @@ class ColorValue {
 ```
 
 ### 最后完成: 拉动右侧明暗带, 左侧色块整体的明暗发生变化
+这部分放在drag_move的事件里：
 ```javascript
-let L = (1 - this.offsetTop / 240);
-            document.addEventListener('mousemove', changeColorL(L));
-            /* 每次改变light,都会更改拾色区整体亮度 */
-            function changeColorL(L) {
+let L = (1 - drag_triangle.offsetTop / 240);
                 let rgb = L * 255;
-                color_wheel.style.background = 'linear-gradient(to bottom, rgba(' + rgb + ', ' + rgb + ', ' + rgb + ', .6) 0%, rgba(' + rgb + ', ' + rgb + ', ' + rgb + ', 1) 100%), linear-gradient(to right, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 17%, rgb(0, 255, 0)34%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 67%, rgb(255, 0, 255) 84%, rgb(255, 0, 0) 100%)';       
-                
-                //`linear-gradient(to bottom, rgba(${rgb}, ${rgb}, ${rgb}, .3) 0%, rgba(${rgb}, ${rgb}, ${rgb}, 1) 100%), linear-gradient(to right, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 17%, rgb(0, 255, 0)34%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 67%, rgb(255, 0, 255) 84%, rgb(255, 0, 0) 100%)`;
-            }
+                color_wheel.style.background = 'linear-gradient(to bottom, rgba(' + rgb + ', ' + rgb + ', ' + rgb + ', .3) 0%, rgba(' + rgb + ', ' + rgb + ', ' + rgb + ', 1) 100%), linear-gradient(to right, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 17%, rgb(0, 255, 0)34%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 67%, rgb(255, 0, 255) 84%, rgb(255, 0, 0) 100%)';
 ```
 
 
